@@ -1,29 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:mbileprogrammingproject/Gift%20details%20page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'Gift details page.dart';
 import 'eventlistpage.dart';
 import 'GiftListPage .dart';
 import 'My Pledged Gifts Page.dart';
 import 'profilepage.dart';
 import 'Login.dart';
+import 'package:flutter/services.dart';
+
+void main() async { WidgetsFlutterBinding.ensureInitialized();
+
+// Lock orientation to portrait
+await SystemChrome.setPreferredOrientations([
+  DeviceOrientation.portraitUp,
+  DeviceOrientation.portraitDown,
+]);
 
 
-void main() {
 
-  runApp(MyApp());
+runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget
-{
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Hediaty App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: LoginPage(),
+    return ScreenUtilInit(
+      designSize: const Size(375, 812), // Design size (width x height)
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Hediaty App',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: isLoggedIn ? HomePage(title: 'Home') : LoginPage(),
+        );
+      },
     );
   }
 }
@@ -39,26 +74,23 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   int selectedIndex = 0;
 
-
-
   UserProfile userProfile = UserProfile()
     ..name = "John Doe"
     ..email = "john.doe@example.com"
-    ..notificationsEnabled = true;// Default to the first tab (friends list)
+    ..notificationsEnabled = true;
 
-  // Pages to navigate
+  final Event dummyevent=Event(name: "Birthday", category: "personal", status: "upcoming");
+
   late final List<Widget> _pages =
   [
-    FriendListPage(), // Friends list is now the default home page
+    FriendListPage(),
     EventListPage(),
     GiftDetailsPage(),
-    GiftListPage(),
     PledgedGiftsPage(),
-    UserProfilePage(userProfile:UserProfile()),
+    UserProfilePage(userProfile: userProfile),
   ];
 
-  void onItemTapped(int index)
-  {
+  void onItemTapped(int index) {
     setState(() {
       selectedIndex = index;
     });
@@ -66,19 +98,23 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold
-      (
-      appBar: AppBar
-        (
-        title: Text(widget.title),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          widget.title,
+          style: TextStyle(fontSize: 20.sp), // Scaled font size
+        ),
         backgroundColor: Colors.blue,
-        actions:
-        [ ElevatedButton(onPressed: null, child: Text("Create your own Event/List")),
-
-          IconButton
-            (
-            onPressed: ()
-            {
+        actions: [
+          ElevatedButton(
+            onPressed: null,
+            child: Text(
+              "Create your own Event/List",
+              style: TextStyle(fontSize: 14.sp), // Scaled font size
+            ),
+          ),
+          IconButton(
+            onPressed: () {
               showSearch(
                 context: context,
                 delegate: CustomSearchDelegate(),
@@ -86,12 +122,10 @@ class HomePageState extends State<HomePage> {
             },
             icon: const Icon(Icons.search),
           ),
-          Image.asset('images/gift.PNG', height: 100),
+          Image.asset('images/gift.PNG', height: 50.h), // Scaled height
         ],
       ),
-
       body: IndexedStack(
-
         index: selectedIndex,
         children: _pages,
       ),
@@ -105,10 +139,7 @@ class HomePageState extends State<HomePage> {
             icon: Icon(Icons.event),
             label: 'Event List',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.card_giftcard),
-            label: 'Gift Details',
-          ),
+
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
             label: 'Gift List',
@@ -129,8 +160,6 @@ class HomePageState extends State<HomePage> {
       ),
     );
   }
-
-
 }
 
 class CustomSearchDelegate extends SearchDelegate {
@@ -180,7 +209,10 @@ class CustomSearchDelegate extends SearchDelegate {
       itemBuilder: (context, index) {
         var result = matchQuery[index];
         return ListTile(
-          title: Text(result),
+          title: Text(
+            result,
+            style: TextStyle(fontSize: 16.sp), // Scaled font size
+          ),
         );
       },
     );
@@ -192,7 +224,12 @@ class CustomSearchDelegate extends SearchDelegate {
   }
 }
 
-class FriendListPage extends StatelessWidget {
+class FriendListPage extends StatefulWidget {
+  @override
+  _FriendListPageState createState() => _FriendListPageState();
+}
+
+class _FriendListPageState extends State<FriendListPage> with AutomaticKeepAliveClientMixin {
   final List<Map<String, String>> friends = [
     {'name': 'Abdo', 'profilePic': 'https://via.placeholder.com/50', 'events': '1'},
     {'name': 'hussein', 'profilePic': 'https://via.placeholder.com/50', 'events': 'No Upcoming Events'},
@@ -201,7 +238,7 @@ class FriendListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    super.build(context);
     return ListView.builder(
       itemCount: friends.length,
       itemBuilder: (context, index) {
@@ -209,9 +246,16 @@ class FriendListPage extends StatelessWidget {
         return ListTile(
           leading: CircleAvatar(
             backgroundImage: NetworkImage(friend['profilePic']!),
+            radius: 20.r, // Scaled radius
           ),
-          title: Text(friend['name']!),
-          subtitle: Text(friend['events']!),
+          title: Text(
+            friend['name']!,
+            style: TextStyle(fontSize: 16.sp), // Scaled font size
+          ),
+          subtitle: Text(
+            friend['events']!,
+            style: TextStyle(fontSize: 14.sp), // Scaled font size
+          ),
           onTap: () {
             Navigator.push(
               context,
@@ -228,6 +272,9 @@ class FriendListPage extends StatelessWidget {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true; // Keep the page alive
 }
 
 class FriendDetailsPage extends StatelessWidget {
@@ -246,7 +293,8 @@ class FriendDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(name),
+
+          title: Text(name),
       ),
       body: Center(
         child: Column(

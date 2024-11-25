@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:mbileprogrammingproject/eventlistpage.dart';
 
+
+import 'package:flutter/widgets.dart';
+
+
+
 class Gift {
   String name;
   String category;
   String status;
-  String Event;// e.g., "Pledged" or "Available"
 
-  Gift({required this.name, required this.category, required this.Event,required this.status});
+
+  Gift({required this.name, required this.category, required this.status});
 }
 
 class GiftListPage extends StatefulWidget {
+  late final Event event;
+  GiftListPage({required this.event});
   @override
   _GiftListPageState createState() => _GiftListPageState();
 }
@@ -38,10 +45,7 @@ class _GiftListPageState extends State<GiftListPage> {
                 decoration: InputDecoration(labelText: 'Gift Name'),
                 onChanged: (value) => name = value,
               ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Event'),
-                onChanged: (value) => Event = value,
-              ),
+
               TextField(
                 decoration: InputDecoration(labelText: 'Category'),
                 onChanged: (value) => category = value,
@@ -68,7 +72,7 @@ class _GiftListPageState extends State<GiftListPage> {
               onPressed: () {
                 if (name.isNotEmpty && category.isNotEmpty) {
                   setState(() {
-                    gifts.add(Gift(name: name, category: category, status: status, Event:Event));
+                    gifts.add(Gift(name: name, category: category, status: status));
                   });
                   Navigator.of(context).pop();
                 }
@@ -93,7 +97,7 @@ class _GiftListPageState extends State<GiftListPage> {
         String name = gift.name;
         String category = gift.category;
         String status = gift.status;
-        String Event=gift.Event;
+
 
         return AlertDialog(
           title: Text('Edit Gift'),
@@ -105,11 +109,7 @@ class _GiftListPageState extends State<GiftListPage> {
                 onChanged: (value) => name = value,
                 controller: TextEditingController(text: name),
               ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Event'),
-                onChanged: (value) => name = value,
-                controller: TextEditingController(text: Event),
-              ),
+
               TextField(
                 decoration: InputDecoration(labelText: 'Category'),
                 onChanged: (value) => category = value,
@@ -137,7 +137,7 @@ class _GiftListPageState extends State<GiftListPage> {
               onPressed: () {
                 if (name.isNotEmpty && category.isNotEmpty) {
                   setState(() {
-                    gifts[index] = Gift(name: name, category: category, status: status, Event: Event);
+                    gifts[index] = Gift(name: name, category: category, status: status);
                   });
                   Navigator.of(context).pop();
                 }
@@ -200,15 +200,7 @@ class _GiftListPageState extends State<GiftListPage> {
                             Navigator.of(context).pop();
                           },
                         ),
-                        ListTile
-                          (
-                          title: Text('Event'),
-                          onTap: ()
-                          {
-                            _sortGifts('Event');
-                            Navigator.of(context).pop();
-                          },
-                        ),
+
                         ListTile(
                           title: Text('Category'),
                           onTap: () {
@@ -241,7 +233,7 @@ class _GiftListPageState extends State<GiftListPage> {
 
           return ListTile(
             title: Text(gift.name),
-            subtitle: Text('${gift.category} -${gift.Event}- ${gift.status}'),
+            subtitle: Text('${gift.category}  ${gift.status}'),
             tileColor: statusColor.withOpacity(0.1),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mbileprogrammingproject/GiftListPage .dart';
 
-void main() {
-  runApp(MyApp());
-}
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -74,45 +73,29 @@ class _EventListPageState extends State<EventListPage> {
           ),
           actions: [
             TextButton(
-              onPressed: ()
-              { final name=nameController.text;
+              onPressed: () {
+                final name = nameController.text;
                 final category = categoryController.text;
-                final Status = statusController.text;
-              if (name.isEmpty)
-              {
-                // Show error if category is invalid
-                ScaffoldMessenger.of(context).showSnackBar
-                  (
-                  SnackBar(content: Text('Name field should not be empty')),
-                );
-              }
-              else
+                final status = statusController.text;
 
-              if (category!='Work' && category!='Personal')
-                {
-                  // Show error if category is invalid
-                  ScaffoldMessenger.of(context).showSnackBar
-                    (
+                if (name.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Name field should not be empty')),
+                  );
+                } else if (category != 'Work' && category != 'Personal') {
+                  ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Category must be "Work" or "Personal".')),
                   );
-                }
-else
-                if(Status!='Past' && Status!='Upcoming' && Status!='Current')
-                  {
-                    ScaffoldMessenger.of(context).showSnackBar
-                      (
-                      SnackBar(content: Text('Status must be "Past" or "Upcoming or Current".')),
-                    );
-                  }
-
-
-
-                else {
+                } else if (status != 'Past' && status != 'Upcoming' && status != 'Current') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Status must be "Past", "Upcoming", or "Current".')),
+                  );
+                } else {
                   setState(() {
                     events[index] = Event(
-                      name: nameController.text,
+                      name: name,
                       category: category,
-                      status: statusController.text,
+                      status: status,
                     );
                   });
                   Navigator.of(context).pop();
@@ -162,7 +145,7 @@ else
             onChanged: (String? newValue) {
               setState(() {
                 dropdownValue = newValue!;
-                _sortEvents(dropdownValue); // Sort events based on the selected option
+                _sortEvents(dropdownValue);
               });
             },
           ),
@@ -172,7 +155,23 @@ else
         itemCount: events.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(events[index].name),
+            title: GestureDetector(
+              child: Text(
+                events[index].name,
+                style: TextStyle(
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GiftListPage(event: events[index]),
+                  ),
+                );
+              },
+            ),
             subtitle: Text('${events[index].category} - ${events[index].status}'),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,

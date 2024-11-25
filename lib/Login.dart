@@ -41,33 +41,33 @@ Widget build(BuildContext context) {
   );
 }
 
-  late TextEditingController _passwordController;
-  late TextEditingController _emailController;
+late TextEditingController _passwordController;
+late TextEditingController _emailController;
 
-  @override
-  void initState() {
-    super.initState();
-    // Initialize the controllers with empty values or default values
-    _passwordController = TextEditingController();
-    _emailController = TextEditingController();
-  }
+@override
+void initState() {
+  super.initState();
+  // Initialize the controllers with empty values or default values
+  _passwordController = TextEditingController();
+  _emailController = TextEditingController();
+}
 
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    _emailController.dispose();
-    super.dispose();
-  }
+@override
+void dispose() {
+  _passwordController.dispose();
+  _emailController.dispose();
+  super.dispose();
+}
 
-  void _login()
+void _login()
+{
+  String email = _emailController.text;
+  String password = _passwordController.text;
+  final GlobalKey<FlutterPwValidatorState> validatorKey = GlobalKey<FlutterPwValidatorState>();
   {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    final GlobalKey<FlutterPwValidatorState> validatorKey = GlobalKey<FlutterPwValidatorState>();
-    {
 
-      FlutterPwValidator
-        (
+    FlutterPwValidator
+      (
         key: validatorKey,
         controller: _passwordController,
         minLength: 8,
@@ -90,10 +90,10 @@ Widget build(BuildContext context) {
         });
 
 
-      // Validate the password
+    // Validate the password
 
 
-      // Return error messages if validation fails
+    // Return error messages if validation fails
 
 
 
@@ -120,35 +120,14 @@ Widget build(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Logged in as $email")),
     );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage(title: 'Hediaty')), // Replace LoginPage with HomePage
-      );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage(title: 'Hediaty')), // Replace LoginPage with HomePage
+    );
   }
 
 
 }
 
 
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}

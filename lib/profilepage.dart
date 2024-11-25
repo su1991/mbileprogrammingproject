@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+
+import 'package:flutter/widgets.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'My Pledged Gifts Page.dart';
 import 'main.dart';
+
 
 
 
@@ -52,7 +58,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       widget.userProfile.name = _nameController.text;
       widget.userProfile.email = _emailController.text;
     });
-    Navigator.pop(context);
+    Navigator.pop(context as BuildContext);
   }
 
   @override
@@ -61,49 +67,49 @@ class _UserProfilePageState extends State<UserProfilePage> {
       appBar: AppBar(
         title: Text('User Profile'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-            ),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Notifications'),
-                Switch(
-                  value: widget.userProfile.notificationsEnabled,
-                  onChanged: (value) {
-                    setState(() {
-                      widget.userProfile.notificationsEnabled = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _saveProfile,
-              child: Text('Save'),
-            ),
-            ElevatedButton(
-              onPressed: ()
-              {
-                final homePageState = context.findAncestorStateOfType<HomePageState>();
-
-                  homePageState?.onItemTapped(4); // Switch to the "Pledged Gifts" tab
-              },
-              child: Text('My Pledged Gifts'),
-            ),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: InputDecoration(labelText: 'Name'),
+              ),
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(labelText: 'Email'),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Notifications'),
+                  Switch(
+                    value: widget.userProfile.notificationsEnabled,
+                    onChanged: (value) {
+                      setState(() {
+                        widget.userProfile.notificationsEnabled = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _saveProfile,
+                child: Text('Save'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  final homePageState = context.findAncestorStateOfType<HomePageState>();
+                  homePageState?.onItemTapped(3); // Switch to the "Pledged Gifts" tab
+                },
+                child: Text('My Pledged Gifts'),
+              ),
+            ],
+          ),
         ),
       ),
     );
-  }
-}
+  }}

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:async';
+
+import 'package:flutter/widgets.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 void main()
 {
@@ -54,7 +59,7 @@ class _PledgedGiftsPageState extends State<PledgedGiftsPage> {
       gift.isPending = !gift.isPending;
     });
     final status = gift.isPending ? 'marked as pending' : 'marked as completed';
-    ScaffoldMessenger.of(context).showSnackBar
+    ScaffoldMessenger.of(context as BuildContext).showSnackBar
       (
       SnackBar(content: Text('${gift.name} has been $status!')),
     );

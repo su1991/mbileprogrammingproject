@@ -2,6 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:async';
+
+import 'package:flutter/widgets.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 void main() {
   runApp(MyApp());
@@ -49,7 +54,7 @@ class _GiftDetailsPageState extends State<GiftDetailsPage> {
     if (_formKey.currentState!.validate() && !isPledged) {
       // Handle the form submission
       // You can save the gift details here
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
         SnackBar(content: Text('Gift details submitted!')),
       );
     }
